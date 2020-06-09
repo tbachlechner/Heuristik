@@ -1,0 +1,5 @@
+beautifulsoup4
+pandas
+nltk
+DateTime
+lxml
