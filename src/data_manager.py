@@ -196,34 +196,47 @@ def download_price(symbol,# name of the equity
 
 
 def download_stocknews_page(name = 'TSLA', page = 1,api_key = keys['stocknews'],page_size = 50,print_query = False):
-    query_dict = {'tickers': name,
-                  'items':str(page_size),
-                  'token':api_key,
-                 'page': str(page)}
+    
+    
+    if name == 'all':
+        query_dict = {'section': 'alltickers',
+                          'items':str(page_size),
+                          'token':api_key,
+                         'page': str(page)}
+        query = 'https://stocknewsapi.com/api/v1/category?'
+        for key in list(query_dict.keys()):
+            query = query + key + '=' + query_dict[key]+'&'
+        query = query[0:-1]
+    
+    else:
+        query_dict = {'tickers': name,
+                      'items':str(page_size),
+                      'token':api_key,
+                     'page': str(page)}
 
-    #Assemble query:
-    query = 'https://stocknewsapi.com/api/v1?'
-    for key in list(query_dict.keys()):
-        query = query + key + '=' + query_dict[key]+'&'
-    query = query[0:-1]
-    if print_query:
-        print(query)
+        #Assemble query:
+        query = 'https://stocknewsapi.com/api/v1?'
+        for key in list(query_dict.keys()):
+            query = query + key + '=' + query_dict[key]+'&'
+        query = query[0:-1]
+        
     with urllib.request.urlopen(query) as url:
         data = json.loads(url.read().decode())
-    
+
     if data['data'] ==[]:
         pages = 0
     else:
         pages = data['total_pages']
-    
-    
+    if print_query:
+        print(query)
+
     return pages, data['data']
 
 
-def download_stocknews(name = 'TSLA', pages = 'all', api_key = keys['stocknews'], path = '', save = True):
+def download_stocknews(name = 'TSLA', pages = 'all', api_key = keys['stocknews'], path = '', save = True,print_query = False):
     assert pages == 'all' or (isinstance(pages,int) and pages>0), "Option pages should be 'all' or positive integer."
     start_time = time.time()
-    number_of_pages, page_0 = download_stocknews_page(name = name, page = 1,api_key = api_key)
+    number_of_pages, page_0 = download_stocknews_page(name = name, page = 1,api_key = api_key, print_query = print_query)
     if number_of_pages == 0:
         return []
     
@@ -247,13 +260,20 @@ def download_stocknews(name = 'TSLA', pages = 'all', api_key = keys['stocknews']
 
 def convert_stocknews_data(data,name = ''):
     df = pd.DataFrame({'time' : [],'symbol':[],'text' : [],'raw_text' : [],'url': [],'src_sentiment' : []})
-    clear_name = name_extraction(name)
+    if name != 'all':
+        clear_name = name_extraction(name)
     length_of_page = len(data)
     for i in range(0,length_of_page):
-        text_body = data[i]['title']+' '+ data[i]['text']
-        text_body = clean_raw_text(text_body,remove_name = clear_name)
+        if data[i]['text'] == None:
+            text_body = data[i]['title']
+        elif data[i]['title'] == None:
+            text_body = data[i]['text']
+        else:
+            text_body = data[i]['title']+' '+ data[i]['text']
+        if name != 'all':
+            text_body = clean_raw_text(text_body,remove_name = clear_name)
         df = df.append({'time' : pd.to_datetime(data[i]['date']).tz_convert('US/Eastern'),
-                        'symbol': name,
+                        'symbol': ', '.join(data[i]['tickers']),
                         'source_name': data[i]['source_name'],
                         'text':text_body,
                         'raw_title':data[i]['title'], 

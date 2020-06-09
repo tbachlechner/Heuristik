@@ -291,9 +291,10 @@ def get_predictions(model, data_loader, device, n_examples = 50,force_n_examples
             
 
     
-
     strongest_preds_index = sorted(range(len(all_preds)), key=lambda x: all_preds[x])[-n_examples:]
+
     strongest_preds = all_preds
+    df = pd.DataFrame({'prediction_score': all_preds}).round(decimals=2)
     for i in range(len(strongest_preds)):
         if i not in strongest_preds_index:
             strongest_preds[i] = 0
@@ -309,7 +310,8 @@ def get_predictions(model, data_loader, device, n_examples = 50,force_n_examples
         if number_of_predictions > 0:
             correct_ratio = correct_predictions/number_of_predictions
         print('Correct ratio:', correct_ratio)
-    df = pd.DataFrame({'predictions':strongest_preds})
+
+    df['predictions'] = pd.DataFrame({'prediction_score':strongest_preds})
     if use_targets == True:
         filename = str(n_examples)+'_best_predictions_acc'
         wandb.log({filename: correct_ratio})
