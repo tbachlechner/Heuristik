@@ -3,6 +3,7 @@ import time
 import urllib.request, json 
 from bs4 import BeautifulSoup
 import nltk
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 import datetime
