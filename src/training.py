@@ -143,7 +143,11 @@ def load_model(model_name, n_classes, pretrained ='None', path = '',):
 
     if pretrained != 'None':
         print('Loading pre-trained model: '+path+pretrained+'.pth')
-        model.load_state_dict(torch.load(path+pretrained+'.pth'))
+        if not torch.cuda.is_available():
+            map_location='cpu'
+            model.load_state_dict(torch.load(path+pretrained+'.pth', map_location=map_location))
+        else:
+            model.load_state_dict(torch.load(path+pretrained+'.pth'))
     # ADD pretrained option!!!
     return model
 
