@@ -3,3 +3,6 @@ pandas
 nltk
 DateTime
 lxml
+torch
+wandb
+transformers
