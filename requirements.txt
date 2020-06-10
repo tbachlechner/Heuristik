@@ -6,3 +6,4 @@ lxml
 torch
 wandb
 transformers
+sklearn
