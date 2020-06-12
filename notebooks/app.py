@@ -6,45 +6,33 @@ import os
 import pandas as pd
 import streamlit as st
 
-import threading
-from threading import Thread
-from threading import Event
+from PIL import Image
 
-class RepeatingTimer(Thread):
-    def __init__(self, interval_seconds, callback):
-        super().__init__()
-        self.stop_event = Event()
-        self.interval_seconds = interval_seconds
-        self.callback = callback
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-    def run(self):
-        while not self.stop_event.wait(self.interval_seconds):
-            self.callback()
-
-    def stop(self):
-        self.stop_event.set()
-
-def dothis():
-    filename = './'+'all'+'.pkl'
-    print('Helooo')
-    #rn = heuristik.recent_news_class()
-    #df_all = rn.recent_news(name = 'all')
-    #df_all.to_pickle(filename)
-
-r1.stop()
-r1 = RepeatingTimer(120, dothis)
-
-
-r1.start()
-
-rn = heuristik.recent_news_class()
+rn = heuristik.recent_news_class(parse_samples = 200)
 
 #Title
-st.title('Heuristik.')
+#st.title('Heuristik.')
+image = Image.open('heuristik_logo.jpeg')
+st.image(image,width = 300)
 st.header('News indicative of imminent stock price volatility.')
 
-symbol = st.selectbox(   'Retrieve news for (e.g. AAPL, TSLA, ...)', ('all', 'AAPL', 'TSLA'))
+#symbol = st.selectbox(   'Retrieve news for (e.g. AAPL, TSLA, ...)', ('all', 'AAPL', 'TSLA'))
+symbol = st.text_input('Retrieve news for... (e.g. AAPL, TSLA, ...)','General')
 filename = './'+symbol+'.pkl'
+
+# Capitalize:
+symbol = ''.join([letter.capitalize() for letter in symbol])
+
+
+if symbol == 'GENERAL':
+    symbol = 'all'
 
 if not os.path.exists(filename):
     df = rn.recent_news(name = symbol)
