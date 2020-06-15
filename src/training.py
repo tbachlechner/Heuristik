@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 
 import wandb
 
-
+model_path = os.environ['heuristik_data_path']
 
 #Define Data loaders
 
@@ -120,7 +120,7 @@ class prepare_loaders():
         else:
             return train_data_loader, [], []
     
-def load_model(model_name, n_classes, pretrained ='None', path = '',):
+def load_model(model_name, n_classes, pretrained ='None', path = model_path,):
 
     class SentimentClassifier(nn.Module):
 
@@ -142,12 +142,12 @@ def load_model(model_name, n_classes, pretrained ='None', path = '',):
     model = SentimentClassifier(n_classes)
 
     if pretrained != 'None':
-        print('Loading pre-trained model: '+path+pretrained+'.pth')
+        print('Loading pre-trained model: '+path+'/'+pretrained+'.pth')
         if not torch.cuda.is_available():
             map_location='cpu'
-            model.load_state_dict(torch.load(path+pretrained+'.pth', map_location=map_location))
+            model.load_state_dict(torch.load(path+'/'+pretrained+'.pth', map_location=map_location))
         else:
-            model.load_state_dict(torch.load(path+pretrained+'.pth'))
+            model.load_state_dict(torch.load(path+'/'+pretrained+'.pth'))
     # ADD pretrained option!!!
     return model
 
@@ -323,7 +323,7 @@ def get_predictions(model, data_loader, device, n_examples = 50,force_n_examples
     else:
         return df, None
     
-def train_model(epochs,model,dl_train,device, dl_val = None, path = '', file_name = '', print_freq = 50):
+def train_model(epochs,model,dl_train,device, dl_val = None, path = model_path, file_name = '', print_freq = 50):
     optimizer = AdamW(model.parameters(), lr=2e-5, correct_bias=False)
     total_steps = len(dl_train) * epochs
     if dl_val != None:
@@ -381,7 +381,7 @@ def train_model(epochs,model,dl_train,device, dl_val = None, path = '', file_nam
                 use_targets = True
                 )
 
-        if correct_ratio > best_correct_ratio: #or (file_name != '' and epoch == epochs - 1 ):
+        if correct_ratio > best_correct_ratio and file_name != '':
             print('Save. Epoch: ',epoch+1)
-            torch.save(model.state_dict(), path+file_name)
+            torch.save(model.state_dict(), path+'/'+file_name)
             best_correct_ratio = correct_ratio

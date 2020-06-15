@@ -16,7 +16,7 @@ import os
 
 
 
-path = '../data'
+path = os.environ["heuristik_data_path"]
 path = os.path.abspath(path) + '/'
 
 
@@ -25,13 +25,6 @@ nltk.download('stopwords',path)
 symbols_nyse = pd.read_csv(path+'nyse-listed_csv.csv')['ACT Symbol'].tolist()
 symbols_nasdaq = pd.read_csv(path+'nasdaq-listed-symbols_csv.csv')['Symbol'].tolist()
 
-
-
-
-assert os.path.exists("../keys.json"), print('No AlphaVantage/StockNews keys found. Add keys in file '+os.path.abspath("../keys.json")+ '. E.g. keys.json file containing {"alphavantage": "[YOUR AlphaVantage KEY]", "stocknews":      "[YOUR StockNews KEY]"}')
-
-f = open("../keys.json")
-keys = json.loads(f.read())
 
 
 def name_extraction(symbol):
@@ -132,7 +125,7 @@ def apply_sentiment(df,timedelta = pd.Timedelta('7 days'),barriers = 0.05):
 def download_price(symbol,# name of the equity
              function = 'SMA',  #Values: 'SMA', TIME_SERIES_INTRADAY' , TIME_SERIES_DAILY
              outputsize = 'compact',  #Values: compact, full
-             apikey = keys['alphavantage'] ,#Docs https://www.alphavantage.co/documentation/
+             apikey = os.environ["heuristik_alphavantage"],#Docs https://www.alphavantage.co/documentation/
              timedelta =  pd.Timedelta('7 days'),
              barriers = 0.05,
              force_download = False
@@ -195,8 +188,17 @@ def download_price(symbol,# name of the equity
 
     return save_file, data
 
+def retrieve_symbols(symbol):
+    query= 'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords='+symbol+'&apikey='+os.environ["heuristik_alphavantage"]
+    with urllib.request.urlopen(query) as url:
+        data = json.loads(url.read().decode())
+    if not 'bestMatches' in data.keys():
+        output = []
+    else:
+        output = data['bestMatches']
+    return output
 
-def download_stocknews_page(name = 'TSLA', page = 1,api_key = keys['stocknews'],page_size = 50,print_query = False):
+def download_stocknews_page(name = 'TSLA', page = 1,api_key = os.environ["heuristik_stocknews"],page_size = 50,print_query = False):
     
     
     if name == 'all':
@@ -234,7 +236,7 @@ def download_stocknews_page(name = 'TSLA', page = 1,api_key = keys['stocknews'],
     return pages, data['data']
 
 
-def download_stocknews(name = 'TSLA', pages = 'all', api_key = keys['stocknews'], path = '', save = True,print_query = False):
+def download_stocknews(name = 'TSLA', pages = 'all', api_key = os.environ["heuristik_stocknews"], download_path = '', save = True,print_query = False):
     assert pages == 'all' or (isinstance(pages,int) and pages>0), "Option pages should be 'all' or positive integer."
     start_time = time.time()
     number_of_pages, page_0 = download_stocknews_page(name = name, page = 1,api_key = api_key, print_query = print_query)
@@ -255,7 +257,7 @@ def download_stocknews(name = 'TSLA', pages = 'all', api_key = keys['stocknews']
         all_pages = all_pages.append(current_page)
         start_time = time.time()
     if save:
-        all_pages.to_csv(path)
+        all_pages.to_csv(download_path)
     return all_pages
 
 
@@ -301,7 +303,7 @@ def process_company(asset_name,pages = 200, force_download = False, text_src = '
             text = text.set_index('time')
             text = text.iloc[::-1]
         else:
-            text = download_stocknews(name = symbol, pages = pages, path = text_path )
+            text = download_stocknews(name = symbol, pages = pages, download_path = text_path )
             if len(text) == 0:
                 print('No news found.')
                 return
@@ -323,7 +325,6 @@ def process_company(asset_name,pages = 200, force_download = False, text_src = '
 # Define data manager class to load data from files or initiate download.
 class data:
     def __init__(self,
-                 path,
                  timeframe = '3 days', 
                  data_version = '4', 
                  barriers =  '5%',

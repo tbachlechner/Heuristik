@@ -1,17 +1,19 @@
 from data_manager import *
 from training import *
 
+data_path = os.environ["heuristik_data_path"]
+
 def recent_news(items = 20,
                 parse_samples = 200,
                 name = 'all',
                 model_name = 'bert-base-cased',
                 pretrained = 'BaseModel_large',
-                path = '../data/',
+                path = data_path,
                 device = 'cpu',
                 max_len = 100,
                 batch_size = 32,
                 seed = 1):
-    model = load_model(model_name = model_name, n_classes = 2, pretrained = pretrained,path = path)
+    model = load_model(model_name = model_name, n_classes = 2, pretrained = pretrained)
     model = model.to(device)
     pages = round(parse_samples/50)
     if pages == 0:
@@ -19,7 +21,7 @@ def recent_news(items = 20,
     if items > 50 * pages:
         pages = round(items/50) + 1
         
-    df_eval = download_stocknews(name = name, pages = pages, path = '', save = False ,print_query=False)
+    df_eval = download_stocknews(name = name, pages = pages, save = False ,print_query=False)
 
     eval_loaders = prepare_loaders(df_eval,
                               bert_model_name = model_name, 
@@ -69,7 +71,7 @@ class recent_news_class:
         self.max_len = max_len
         self.batch_size = batch_size
         self.seed = seed
-        self.model = load_model(model_name = model_name, n_classes = 2, pretrained = pretrained,path = path)
+        self.model = load_model(model_name = model_name, n_classes = 2, pretrained = pretrained)
         self.model = self.model.to(device)
         self.pages = round(parse_samples/50)
         self.items = items
@@ -81,7 +83,7 @@ class recent_news_class:
             self.pages = round(self.items/50) + 1
     
     def recent_news(self,name):
-        df_eval = download_stocknews(name = name, pages = self.pages, path = '', save = False , print_query=False)
+        df_eval = download_stocknews(name = name, pages = self.pages, save = False , print_query=False)
 
         eval_loaders = prepare_loaders(df_eval,
                                   bert_model_name = self.model_name, 
