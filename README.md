@@ -1,4 +1,4 @@
-<p align="right">
+<p align="center">
 <img src=./data/heuristik_logo.jpeg width="350"/>
 </p>
 
