@@ -2,8 +2,8 @@ import sys
 import os
 import json
 
-sys.path.insert(1, '/home/thomas/ai/Heuristik/src')
-os.environ["heuristik_data_path"] = '/home/thomas/ai/Heuristik/data'
+sys.path.insert(1, '/home/ubuntu/ai/Heuristik/src')
+os.environ["heuristik_data_path"] = '/home/ubuntu/ai/Heuristik/data'
 
 import heuristik
 import time
