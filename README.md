@@ -30,7 +30,7 @@ The model selected out of the ~2500 news items in the test set 50 strong predict
 <img src=./data/learning_curve.jpg width="550"/>
 </p>
 
-To establish the statistical significance that the ReZero model outperforms the plain Transformer model, each was trained four times. The ReZero model on average outperformed the plain model by 7 percent, and none of the ReZero models performed worse than the plain models.
+To establish the statistical significance that the ReZero model outperforms the plain Transformer model, each was trained four times. The ReZero model on average outperformed the plain model by 7 percent, and none of the ReZero runs performed worse than the plain runs.
 
 
 ### Issues/Notes
