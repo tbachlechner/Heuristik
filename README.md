@@ -32,7 +32,7 @@ The model selected out of the ~2500 news items in the test 50 strong predictions
 
 ### Issues/Notes
 
-- Over-fitting is one of the main issues. The dataset used to train the model contains about 5M words, and the model achieves a >99% accuracy on the training set after about 10 epochs, inhibiting any further increase in generalization performance. While hyperparameter-tuning might somewhat ammeliorate this issue, a larger dataset is likely to most effectively address this issue.
+- Over-fitting is one of the main issues. The dataset used to train the model contains about 5M words, and the model achieves a >99% accuracy on the training set after about 10 epochs, inhibiting any further increase in generalization performance. While hyperparameter-tuning might somewhat ammeliorate this issue, a larger dataset is likely most effective to address this issue.
 
 - News reports containing "earnings calls" are predicted as highly significant.
 
