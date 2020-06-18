@@ -21,8 +21,10 @@ hide_menu_style = """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 time_window = 60*60
-
+non_general_factor = 24
 parse_samples = 200
+
+items = 20
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
 def call_rn():
@@ -86,7 +88,10 @@ with st.spinner('Downloading and processing '+ str(parse_samples) + ' news items
     if not os.path.exists(filename):
         df = rn.recent_news(name = symbol)
         df.to_pickle(filename)
-    elif time.time() - os.stat(filename).st_mtime > time_window:
+    elif time.time() - os.stat(filename).st_mtime > time_window and symbol == 'all':
+        df = rn.recent_news(name = symbol)
+        df.to_pickle(filename)
+    elif time.time() - os.stat(filename).st_mtime > non_general_factor * time_window:
         df = rn.recent_news(name = symbol)
         df.to_pickle(filename)
     else:
@@ -98,10 +103,12 @@ raw_titles = list(df['raw_title'])
 raw_texts = list(df['raw_text'])
 urls = list(df['url'])
 scores =  list(df['prediction_score'])
+num_items = len(df)
+if items > num_items:
+    items = num_items
 
 
-
-for i in range(0,20):
+for i in range(0,items):
     if raw_titles[i] != raw_texts[i]:
         print_text = raw_texts[i]
     else:
