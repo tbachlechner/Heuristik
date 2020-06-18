@@ -30,6 +30,9 @@ The model selected out of the ~2500 news items in the test set 50 strong predict
 <img src=./data/learning_curve.jpg width="550"/>
 </p>
 
+To establish the statistical significance that the ReZero model outperforms the plain Transformer model, each was trained four times. The ReZero model on average outperformed the plain model by 7 percent, and none of the ReZero models performed worse than the plain models.
+
+
 ### Issues/Notes
 
 - Over-fitting is one of the main issues. The dataset used to train the model contains about 5M words, and the model achieves a >99% accuracy on the training set after about 10 epochs, inhibiting any further increase in generalization performance. While hyperparameter-tuning might somewhat ammeliorate this issue, a larger dataset is likely most effective to address this issue.
