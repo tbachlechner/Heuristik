@@ -4,7 +4,7 @@
 
 ## Beating trends. News indicative of imminent stock price volatility.
 
-Heuristik is a deep learning pipeline that predicts business news items that are indicative of large future stock price changes. The model is deployed at (heuristik.me)[http://www.heuristik.me].
+Heuristik is a deep learning pipeline that predicts business news items that are indicative of large future stock price changes. The model is deployed at [heuristik.me](http://www.heuristik.me).
 
 Heuristik periodically parses thousands of business news items and infers a score that reflects how likely the stock price of the associated company will fluctuate by >5% over the following three days.
 
@@ -14,11 +14,11 @@ The complete pipeline is shown in the schematic.
 <img src=./data/schematic.jpg width="850"/>
 </p>
 
-Heuristik collects historical and current news and stock prices from the (StockNews)[https://stocknewsapi.com] and (AlphaVantage)[https://www.alphavantage.co] APIs, respectively.
+Heuristik collects historical and current news and stock prices from the [StockNews](https://stocknewsapi.com) and [AlphaVantage](https://www.alphavantage.co) APIs, respectively.
 
-The historical text and time-series data is stored, cleaned and labeled according to whether the stock price changes significantly using the (triple-barrier method)[https://mlfinlab.readthedocs.io/en/latest/implementations/tb_meta_labeling.html]. To clean the news data it is important to remove the unique company name, which improves inference precision (e.g. replace "Tesla", "Apple", ... with the word "company"). The resulting dataset is imbalanced. About 10% of the news reports are followed by a significant change in stock price (i.e. >5% fluctuation over 3 days). 
+The historical text and time-series data is stored, cleaned and labeled according to whether the stock price changes significantly using the [triple-barrier method](https://mlfinlab.readthedocs.io/en/latest/implementations/tb_meta_labeling.html). To clean the news data it is important to remove the unique company name, which improves inference precision (e.g. replace "Tesla", "Apple", ... with the word "company"). The resulting dataset is imbalanced. About 10% of the news reports are followed by a significant change in stock price (i.e. >5% fluctuation over 3 days). 
 
-The model consists of a pre-trained (Huggingface BERT)[https://github.com/huggingface/transformers] transformer model, supplemented by the (ReZero architecture)[https://arxiv.org/pdf/2003.04887.pdf]. Since the dataset is imbalanced, the (FocalLoss)[https://arxiv.org/pdf/1708.02002.pdf] function is used, which emphasizes the wrong predictions of the model and significantly improves performance on the validation and test-sets. The model is trained using the AdamW optimizer.
+The model consists of a pre-trained [Huggingface BERT](https://github.com/huggingface/transformers) transformer model, supplemented by the [ReZero architecture](https://arxiv.org/pdf/2003.04887.pdf). Since the dataset is imbalanced, the [FocalLoss](https://arxiv.org/pdf/1708.02002.pdf) function is used, which emphasizes the wrong predictions of the model and significantly improves performance on the validation and test-sets. The model is trained using the AdamW optimizer.
 
 The trained model is used to infer the relevancy score on current news items. The package Streamlit is used to deploy the results, and to interface new inquiries with the inference and data-collection threads.
 
