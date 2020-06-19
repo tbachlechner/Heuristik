@@ -13,6 +13,8 @@ import streamlit as st
 
 from PIL import Image
 
+
+
 hide_menu_style = """
         <style>
         #MainMenu {visibility: hidden;}
@@ -32,7 +34,7 @@ def call_rn():
     return rn
 
 def symbol_resolution(symbol):
-    re.sub('[^a-zA-Z\s]+', '',symbol)
+    symbol = re.sub('[^a-zA-Z]+', '',symbol)
     symbol = symbol.replace(" ", "%20")
 
     # Capitalize:
@@ -57,7 +59,6 @@ def symbol_resolution(symbol):
     
     if resolved_symbol == 'GENERAL':
         resolved_symbol = 'all'
-
     return resolved_symbol
 
 
