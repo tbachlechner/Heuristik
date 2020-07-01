@@ -27,7 +27,7 @@ The trained model is used to infer the relevancy score on current news items. Th
 The model selected out of the ~2500 news items in the test set 50 strong predictions. 76% those 50 news reports were indeed followed by a significant change in the price of the associated stock. To compare the model, a plain Huggingface Transformer model and a 10-layer fully connected network were trained on the same data, achieving about 70% and 10% precision on the test-set respectively. The ReZero-Transformer significantly outperforms the plain Transformer, and (as expected) a fully connected network performs no better than a random guess on this task. Each of the models were trained for 10 epochs, with a batch size of 32 news items, and each news item was trimmed to a maximum of 100 words. The figure shows the precision on the validation set for each of the three architectures.
 
 <p align="center">
-<img src=./data/learning_curve.jpg width="550"/>
+<img src=./data/learning_curves.png width="550"/>
 </p>
 
 To establish the statistical significance that the ReZero model outperforms the plain Transformer model, each was trained four times. The ReZero model on average outperformed the plain model by 7 percent, and none of the ReZero runs performed worse than the plain runs.
