@@ -22,13 +22,13 @@ hide_menu_style = """
         """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-time_window = 60*60
+time_window = 60*60*12
 non_general_factor = 24
 parse_samples = 200
 
 items = 20
 
-@st.cache(suppress_st_warning=True, show_spinner=False)
+@st.cache(suppress_st_warning=True, show_spinner=False,allow_output_mutation=True)
 def call_rn():
     rn = heuristik.recent_news_class(parse_samples = parse_samples)
     return rn
