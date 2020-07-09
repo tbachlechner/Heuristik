@@ -17,7 +17,7 @@ import time
 import os
 import pandas as pd
 
-#Interval in s for updates (1/hr)
+# Interval in s for updates (1/hr)
 interval = 60*60
 # number of news items to parse
 parse_samples = 2000

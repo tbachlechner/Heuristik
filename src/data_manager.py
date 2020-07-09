@@ -513,6 +513,7 @@ class data:
         df['sentiment'] = df.sentiment.apply(self.to_numerical_sentiment)
         df= df.rename(columns={'sentiment': 'price_sentiment'})
         df['src_sentiment'] = df.src_sentiment.apply(self.to_numerical_sentiment)
+        ## DELETE THESE TWO LINES IF YOU DON'T NEED THEM
         #df = df.reset_index()
         #df = df.drop(columns=['index'])
         print('Successfully retrieved',self.human_format(len(df)),'samples.')
