@@ -392,6 +392,8 @@ class data:
                     binary_sentiment = args.binary_sentiment)
         df = data.retrieve(symbols = ['TWTR','AMD'],download=True)
         """
+
+        ## move the usage instruction before __init__
         
         self.path = path
         self.timeframe = timeframe
