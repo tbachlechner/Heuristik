@@ -23,7 +23,7 @@ interval = 60*60
 parse_samples = 2000
 history_path = os.environ["heuristik_data_path"] + '/call_history'
 if not os.path.exists(history_path):
-    os.mkdir(history_pazth)
+    os.mkdir(history_path)
 
 general_filename = history_path+'/'+'all'+'.pkl'
 rn = heuristik.recent_news_class(parse_samples = parse_samples)
